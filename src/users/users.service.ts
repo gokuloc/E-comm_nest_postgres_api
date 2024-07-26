@@ -58,12 +58,13 @@ export class UsersService {
       expiresIn: process.env.ACCESS_TOKEN_EXPIRE_TIME,
     });
   }
-  findAll() {
-    return `This action returns all users`;
+  async findAll(): Promise<User[]> {
+    return await this.userRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number): Promise<User> {
+    const user = await this.userRepository.findOneBy({ id: id });
+    return user;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
