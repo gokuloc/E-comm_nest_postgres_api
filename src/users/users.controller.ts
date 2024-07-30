@@ -14,11 +14,20 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { LoginUserDTO } from './dto/login-user.dto';
 import { CurrentUser } from 'src/utilities/custom-decorators/currentUser.decorator';
+import {
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @Controller('users')
+@ApiTags('Users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @ApiCreatedResponse({ type: User })
+  @ApiBadRequestResponse()
   @Post('signup')
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return await this.usersService.create(createUserDto);
@@ -34,11 +43,13 @@ export class UsersController {
     return { accessToken, user };
   }
 
+  @ApiOkResponse({ type: User, isArray: true })
   @Get('all')
   async findAll(): Promise<User[]> {
     return await this.usersService.findAll();
   }
 
+  @ApiOkResponse({ type: User })
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<User> {
     const user = await this.usersService.findOne(+id);
